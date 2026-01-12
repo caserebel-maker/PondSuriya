@@ -22,17 +22,18 @@
   --primary-800: #002052;
   --primary-900: #001029;
 
-  /* Accent Colors - Gold (Premium & Excellence) */
-  --accent-50: #fff9e6;
-  --accent-100: #ffedb3;
-  --accent-200: #ffe180;
-  --accent-300: #ffd54d;
-  --accent-400: #ffc91a;
-  --accent-500: #e6b000;
-  --accent-600: #b38900;
-  --accent-700: #806200;
-  --accent-800: #4d3b00;
-  --accent-900: #1a1400;
+  /* Accent Colors - Orange (Vibrant & Energetic) */
+  --accent-50: #fff7ed;
+  --accent-100: #ffedd5;
+  --accent-200: #fed7aa;
+  --accent-300: #fdba74;
+  --accent-400: #fb923c;
+  --accent-500: #f97316;
+  /* Main Orange */
+  --accent-600: #ea580c;
+  --accent-700: #c2410c;
+  --accent-800: #9a3412;
+  --accent-900: #7c2d12;
 
   /* Semantic Colors */
   --success: #10b981;
@@ -481,7 +482,8 @@ h6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.1); /* Subtle dark layer */
+  background: rgba(0, 0, 0, 0.1);
+  /* Subtle dark layer */
 }
 
 .hero-content {
