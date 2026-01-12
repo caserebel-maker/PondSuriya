@@ -472,7 +472,7 @@ h6 {
 /* Responsive Background for Mobile */
 @media (max-width: 768px) {
   .hero {
-    background-image: linear-gradient(rgba(0, 32, 82, 0.6), rgba(0, 32, 82, 0.8)), url('../assets/hero_v2.jpg');
+    background-image: linear-gradient(rgba(0, 32, 82, 0.6), rgba(0, 32, 82, 0.8)), url('../assets/hero_mobile_v2.jpg');
     background-position: top center;
   }
 }
