@@ -44,7 +44,7 @@ const LOCATION_DATA = {
 // Utility Functions
 // ===================================
 function generateId() {
-  return 'SP' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+  return 'ST' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
 }
 
 function formatDate(date) {

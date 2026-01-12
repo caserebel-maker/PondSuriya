@@ -221,11 +221,10 @@ h6 {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(to right, var(--accent-500), var(--accent-700));
+  box-shadow: var(--shadow-md);
   z-index: 1000;
-  padding: var(--space-4) 0;
+  padding: var(--space-3) 0;
 }
 
 .navbar .container {
@@ -240,13 +239,15 @@ h6 {
   gap: var(--space-3);
   font-weight: 700;
   font-size: var(--font-size-xl);
-  color: var(--primary-600);
+  color: white;
+  /* Changed to white for gradient */
 }
 
 .navbar-brand img {
-  height: 40px;
-  width: 40px;
+  height: 42px;
+  width: 42px;
   border-radius: var(--radius-full);
+  border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .navbar-menu {
@@ -257,7 +258,8 @@ h6 {
 }
 
 .navbar-menu a {
-  color: var(--gray-600);
+  color: rgba(255, 255, 255, 0.9);
+  /* Lighter text for accessibility */
   font-weight: 500;
   padding: var(--space-2) 0;
   position: relative;
@@ -269,14 +271,14 @@ h6 {
   bottom: 0;
   left: 0;
   width: 0;
-  height: 2px;
-  background: var(--primary-500);
+  height: 3px;
+  background: white;
   transition: width var(--transition-normal);
 }
 
 .navbar-menu a:hover,
 .navbar-menu a.active {
-  color: var(--primary-500);
+  color: white;
 }
 
 .navbar-menu a:hover::after,

@@ -51,7 +51,7 @@ class DatabaseService {
         const reports = this._getReports();
         const newReport = {
             ...reportData,
-            id: 'SP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000), // e.g., SP-2026-1234
+            id: 'ST-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000), // e.g., ST-2026-1234
             status: 'pending',
             createdAt: new Date().toISOString(),
             timeline: [
