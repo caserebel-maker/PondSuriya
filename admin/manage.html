@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการเรื่องร้องเรียน - สมุทรปราการ ร่วมใจ</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .manage-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-6);
+            padding: var(--space-8);
+            background: var(--gray-50);
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: var(--space-6);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-6);
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            margin-bottom: var(--space-4);
+        }
+
+        .detail-label {
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--space-4);
+            margin-top: var(--space-4);
+        }
+
+        .image-item {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--gray-200);
+            padding-left: var(--space-6);
+            margin-left: var(--space-2);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--space-6);
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-500);
+            border-radius: 50%;
+            position: absolute;
+            left: -23px;
+            top: 5px;
+        }
+
+        .status-select {
+            width: 100%;
+            padding: var(--space-3);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+        }
+
+        @media (max-width: 768px) {
+            .manage-layout {
+                grid-template-columns: 1fr;
+                padding: var(--space-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar (Simplified for admin) -->
+    <nav
+        style="background: white; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-weight: bold; font-size: var(--font-size-lg);">⚡ จัดการเรื่องร้องเรียน</div>
+        <a href="dashboard.html" class="btn btn-sm btn-secondary">← กลับหน้า Dashboard</a>
+    </nav>
+
+    <div class="manage-layout">
+        <!-- Main Content -->
+        <main>
+            <!-- Report Details -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-6);">
+                    <h2 id="reportTitle">รายละเอียดเรื่องร้องเรียน</h2>
+                    <span id="currentStatus" class="badge">Loading...</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Tracking ID</span>
+                    <strong id="detail-id">-</strong>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">วันที่แจ้ง</span>
+                    <span id="detail-date">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">หมวดหมู่</span>
+                    <span id="detail-category">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">ผู้แจ้ง</span>
+                    <span id="detail-name">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">เบอร์โทร</span>
+                    <span><a href="#" id="detail-phone">-</a></span>
+                </div>
+
+                <hr style="margin: var(--space-6) 0; border: 0; border-top: 1px solid var(--gray-200);">
+
+                <h3 style="margin-bottom: var(--space-4);">รายละเอียดปัญหา</h3>
+                <p id="detail-desc" style="color: var(--gray-700); line-height: 1.6;">-</p>
+
+                <h4 style="margin-top: var(--space-6); margin-bottom: var(--space-2);">สถานที่</h4>
+                <p id="detail-location">-</p>
+
+                <h4 style="margin-top: var(--space-6); margin-bottom: var(--space-4);">รูปภาพประกอบ</h4>
+                <div class="image-gallery" id="detail-images">
+                    <!-- Images will go here -->
+                </div>
+            </div>
+
+            <!-- Resolution Images (Only if completed) -->
+            <div class="card" id="resolutionCard" style="display: none;">
+                <h3>📸 รูปภาพการแก้ไข (After)</h3>
+                <div class="image-gallery" id="resolution-images"></div>
+            </div>
+        </main>
+
+        <!-- Sidebar / Action Panel -->
+        <aside>
+            <div class="card">
+                <h3 style="margin-bottom: var(--space-4);">⚙️ การจัดการ</h3>
+
+                <form id="updateForm">
+                    <label class="form-label">เปลี่ยนสถานะ</label>
+                    <select id="statusSelect" class="status-select">
+                        <option value="pending">รอการตรวจสอบ</option>
+                        <option value="accepted">รับเรื่องแล้ว</option>
+                        <option value="in_progress">กำลังดำเนินการ</option>
+                        <option value="completed">เสร็จสิ้น</option>
+                    </select>
+
+                    <label class="form-label">บันทึกการดำเนินการ</label>
+                    <textarea id="actionNote" class="form-input" style="height: 100px; margin-bottom: var(--space-4);"
+                        placeholder="รายละเอียดการดำเนินการ..."></textarea>
+
+                    <div id="uploadResolution" style="display: none;">
+                        <label class="form-label">อัปโหลดรูปหลังแก้ไข (จำเป็น)</label>
+                        <input type="file" id="afterImageInput" accept="image/*" class="form-input"
+                            style="margin-bottom: var(--space-4);">
+                        <div id="afterImagePreview" style="margin-bottom: var(--space-4);"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-full">💾 บันทึกการเปลี่ยนแปลง</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: var(--space-4);">🕒 Timeline</h3>
+                <div class="timeline" id="timelineList">
+                    <!-- Timeline items -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/services/auth-service.js"></script>
+    <script src="../js/services/db-service.js"></script>
+    <script>
+        // Auth Check
+        authService.checkAuth();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportId = urlParams.get('id');
+
+        // Elements
+        const form = document.getElementById('updateForm');
+        const statusSelect = document.getElementById('statusSelect');
+        const uploadDiv = document.getElementById('uploadResolution');
+
+        if (!reportId) {
+            alert('ไม่พบรหัสเรื่องร้องเรียน');
+            window.location.href = 'dashboard.html';
+        }
+
+        statusSelect.addEventListener('change', () => {
+            if (statusSelect.value === 'completed') {
+                uploadDiv.style.display = 'block';
+                document.getElementById('afterImageInput').required = true;
+            } else {
+                uploadDiv.style.display = 'none';
+                document.getElementById('afterImageInput').required = false;
+            }
+        });
+
+        async function loadReport() {
+            try {
+                const report = await dbService.getReportById(reportId);
+                if (!report) throw new Error('Report not found');
+
+                // Render Info
+                document.getElementById('detail-id').textContent = report.id;
+                document.getElementById('detail-date').textContent = new Date(report.createdAt).toLocaleString('th-TH');
+                document.getElementById('detail-category').textContent = report.category;
+                document.getElementById('detail-name').textContent = report.name;
+                document.getElementById('detail-phone').textContent = report.phone;
+                document.getElementById('detail-phone').href = `tel:${report.phone}`;
+                document.getElementById('detail-desc').textContent = report.description;
+                document.getElementById('detail-location').textContent = `${report.location} (${report.subdistrict} > ${report.district})`;
+
+                // Status Badge
+                const sBadge = document.getElementById('currentStatus');
+                sBadge.textContent = report.status.toUpperCase();
+
+                // Images
+                const imgContainer = document.getElementById('detail-images');
+                if (report.images && report.images.length > 0) {
+                    report.images.forEach(src => {
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.className = 'image-item';
+                        img.onclick = () => window.open(src, '_blank');
+                        imgContainer.appendChild(img);
+                    });
+                } else {
+                    imgContainer.innerHTML = '<p style="color:#999;">ไม่มีรูปภาพประกอบ</p>';
+                }
+
+                // Timeline
+                const tlContainer = document.getElementById('timelineList');
+                tlContainer.innerHTML = '';
+                report.timeline.forEach(t => {
+                    const div = document.createElement('div');
+                    div.className = 'timeline-item';
+                    div.innerHTML = `
+                        <div class="timeline-dot"></div>
+                        <div style="font-weight: 500;">${t.status}</div>
+                        <div style="font-size: 0.9em; color: var(--gray-600);">${t.message}</div>
+                        <div style="font-size: 0.8em; color: var(--gray-400);">${new Date(t.timestamp).toLocaleString('th-TH')}</div>
+                    `;
+                    tlContainer.appendChild(div);
+                });
+
+                // Set form defaults
+                statusSelect.value = report.status;
+                if (report.status === 'completed') uploadDiv.style.display = 'block';
+
+            } catch (err) {
+                alert('Error: ' + err.message);
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            btn.disabled = true;
+            btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                const newStatus = statusSelect.value;
+                const note = document.getElementById('actionNote').value || 'เปลี่ยนแปลงสถานะ';
+                const extraData = {};
+
+                // Handle After Image
+                if (newStatus === 'completed') {
+                    const fileInput = document.getElementById('afterImageInput');
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const reader = new FileReader();
+                        // Simple promise wrapper for reader
+                        const dataUrl = await new Promise(resolve => {
+                            reader.onload = e => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                        extraData.afterImages = [dataUrl];
+                    }
+                }
+
+                await dbService.updateReportStatus(reportId, newStatus, note, extraData);
+
+                alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+                window.location.reload();
+
+            } catch (err) {
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = '💾 บันทึกการเปลี่ยนแปลง';
+            }
+        });
+
+        loadReport();
+    </script>
+</body>
+
+</html>

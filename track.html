@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ติดตามสถานะเรื่องร้องเรียนของคุณ">
+    <title>ติดตามสถานะ - สมุทรปราการ ร่วมใจ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .track-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .report-header-info {
+            flex: 1;
+        }
+
+        .report-header-info h3 {
+            margin-bottom: var(--space-1);
+        }
+
+        .report-id-display {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .report-details {
+            border-top: 1px solid var(--gray-200);
+            padding-top: var(--space-6);
+        }
+
+        .detail-item {
+            margin-bottom: var(--space-4);
+        }
+
+        .detail-item label {
+            font-weight: 600;
+            color: var(--gray-600);
+            font-size: var(--font-size-sm);
+            display: block;
+            margin-bottom: var(--space-1);
+        }
+
+        .detail-item p {
+            color: var(--gray-800);
+        }
+
+        .text-muted {
+            color: var(--gray-500);
+            font-size: var(--font-size-sm);
+        }
+
+        .timeline-message {
+            margin-bottom: var(--space-1);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <div
+                    style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-500), var(--accent-500)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    SP</div>
+                <span>สมุทรปราการ ร่วมใจ</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="about.html">เกี่ยวกับเรา</a></li>
+                <li><a href="report.html">แจ้งปัญหา</a></li>
+                <li><a href="track.html" class="active">ติดตามสถานะ</a></li>
+                <li><a href="admin/login.html" style="color: var(--primary-500); font-weight: bold;">🔒 เข้าระบบ</a>
+                </li>
+            </ul>
+            <div class="navbar-toggle"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <section class="about-hero" style="padding: var(--space-12) 0; padding-top: 100px;">
+        <div class="container">
+            <h1>🔍 ติดตามสถานะ</h1>
+            <p style="opacity: 0.9;">ค้นหาและติดตามสถานะเรื่องร้องเรียนของคุณ</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="track-container">
+                <form id="trackSearchForm" class="search-box mb-8"
+                    style="background: white; padding: var(--space-6); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+                    <div
+                        style="display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) auto; align-items: flex-end;">
+                        <div class="form-group mb-0">
+                            <label class="form-label" style="font-size: 0.9rem;">หมายเลขอ้างอิง</label>
+                            <input type="text" id="trackId" class="form-input" placeholder="เช่น SP-2026-XXXX"
+                                style="text-transform: uppercase; width: 100%;" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="form-label" style="font-size: 0.9rem;">เบอร์โทรศัพท์ (ยืนยันตัวตน)</label>
+                            <input type="tel" id="trackPhone" class="form-input" placeholder="เบอร์ที่ใช้แจ้งเรื่อง"
+                                style="width: 100%;" required>
+                        </div>
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary"
+                                style="height: 48px; white-space: nowrap;">ตรวจสอบสถานะ</button>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-2" style="font-size: 0.8rem; text-align: left;">
+                        * เพื่อความเป็นส่วนตัว โปรดระบุเบอร์โทรศัพท์ที่ท่านแจ้งเรื่องไว้เพื่อเข้าดูรายละเอียด
+                    </p>
+                </form>
+
+                <div id="trackResult" style="display: none;"></div>
+
+                <div style="margin-top: var(--space-12);">
+                    <h3 class="mb-4">เรื่องร้องเรียนล่าสุด</h3>
+                    <div id="recentReports" class="report-list"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section"
+        style="background: linear-gradient(135deg, var(--primary-600), var(--primary-800)); color: white;">
+        <div class="container text-center">
+            <h2 style="color: white; margin-bottom: var(--space-4);">พบปัญหาใหม่?</h2>
+            <p style="opacity: 0.9; margin-bottom: var(--space-8);">แจ้งเรื่องร้องเรียนเพิ่มเติมได้ทันที</p>
+            <a href="report.html" class="btn btn-accent btn-lg">📝 แจ้งปัญหาใหม่</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 สมุทรปราการ ร่วมใจ - ทุกเสียงมีความหมาย</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/services/db-service.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

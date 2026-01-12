@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="แจ้งปัญหาในชุมชนของคุณ">
+    <title>แจ้งปัญหา - สมุทรปราการ ร่วมใจ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .category-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .category-btn:hover {
+            border-color: var(--primary-300);
+            background: var(--primary-50);
+        }
+
+        .category-btn.selected {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+            box-shadow: 0 0 0 3px var(--primary-100);
+        }
+
+        .category-btn-icon {
+            font-size: var(--font-size-2xl);
+        }
+
+        .category-btn-label {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .report-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: white;
+            padding: var(--space-8);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-6);
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .form-section-title span {
+            font-size: var(--font-size-xl);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            cursor: pointer;
+            font-size: var(--font-size-md);
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            height: 24px;
+            width: 24px;
+            background-color: white;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .checkbox-container:hover input~.checkmark {
+            border-color: var(--primary-400);
+        }
+
+        .checkbox-container input:checked~.checkmark {
+            background-color: var(--primary-600);
+            border-color: var(--primary-600);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .checkbox-container input:checked~.checkmark:after {
+            display: block;
+            left: 8px;
+            top: 4px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        .captcha-box {
+            background: #f9f9f9;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            padding: var(--space-4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 300px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <div
+                    style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-500), var(--accent-500)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    SP</div>
+                <span>สมุทรปราการ ร่วมใจ</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">หน้าแรก</a></li>
+                <li><a href="about.html">เกี่ยวกับเรา</a></li>
+                <li><a href="report.html" class="active">แจ้งปัญหา</a></li>
+                <li><a href="track.html">ติดตามสถานะ</a></li>
+                <li><a href="admin/login.html" style="color: var(--primary-500); font-weight: bold;">🔒 เข้าระบบ</a>
+                </li>
+            </ul>
+            <div class="navbar-toggle"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <section class="about-hero" style="padding: var(--space-12) 0; padding-top: 100px;">
+        <div class="container">
+            <h1>📝 แจ้งปัญหา</h1>
+            <p style="opacity: 0.9;">กรอกข้อมูลด้านล่างเพื่อแจ้งปัญหาในชุมชนของคุณ</p>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--gray-100);">
+        <div class="container">
+            <div class="report-form-container">
+                <form id="reportForm" novalidate>
+                    <div class="form-section category-section">
+                        <div class="form-section-title"><span>📋</span>
+                            <h3>1. เลือกหมวดหมู่ปัญหา</h3>
+                        </div>
+                        <input type="hidden" id="category" name="category">
+                        <div class="category-buttons">
+                            <button type="button" class="category-btn" data-category="road"><span
+                                    class="category-btn-icon">🛣️</span><span class="category-btn-label">ถนน /
+                                    ทางเท้า</span></button>
+                            <button type="button" class="category-btn" data-category="flood"><span
+                                    class="category-btn-icon">💧</span><span class="category-btn-label">น้ำท่วม /
+                                    ระบายน้ำ</span></button>
+                            <button type="button" class="category-btn" data-category="electric"><span
+                                    class="category-btn-icon">💡</span><span class="category-btn-label">ไฟฟ้า /
+                                    แสงสว่าง</span></button>
+                            <button type="button" class="category-btn" data-category="trash"><span
+                                    class="category-btn-icon">🗑️</span><span class="category-btn-label">ขยะ /
+                                    สิ่งแวดล้อม</span></button>
+                            <button type="button" class="category-btn" data-category="safety"><span
+                                    class="category-btn-icon">🛡️</span><span
+                                    class="category-btn-label">ความปลอดภัย</span></button>
+                            <button type="button" class="category-btn" data-category="other"><span
+                                    class="category-btn-icon">📋</span><span
+                                    class="category-btn-label">อื่นๆ</span></button>
+                        </div>
+                        <p class="form-error" style="display: none;">กรุณาเลือกหมวดหมู่ปัญหา</p>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span>📝</span>
+                            <h3>2. รายละเอียดปัญหา</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">อธิบายปัญหา <span class="required">*</span></label>
+                            <textarea class="form-textarea" name="description"
+                                placeholder="อธิบายรายละเอียดปัญหาที่พบ..." rows="5" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span>📍</span>
+                            <h3>3. สถานที่เกิดปัญหา</h3>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">อำเภอ <span class="required">*</span></label>
+                                <select class="form-select" name="district" id="districtSelect" required>
+                                    <option value="">เลือกอำเภอ</option>
+                                    <option value="เมืองสมุทรปราการ">เมืองสมุทรปราการ</option>
+                                    <option value="บางบ่อ">บางบ่อ</option>
+                                    <option value="บางพลี">บางพลี</option>
+                                    <option value="พระประแดง">พระประแดง</option>
+                                    <option value="พระสมุทรเจดีย์">พระสมุทรเจดีย์</option>
+                                    <option value="บางเสาธง">บางเสาธง</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">ตำบล/แขวง <span class="required">*</span></label>
+                                <select class="form-select" name="subdistrict" id="subdistrictSelect" required disabled>
+                                    <option value="">กรุณาเลือกอำเภอก่อน</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">รายละเอียดสถานที่ <span class="required">*</span></label>
+                            <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-2);">
+                                <button type="button" id="getLocationBtn" class="btn btn-secondary btn-sm"
+                                    style="flex-shrink: 0;">
+                                    📍 ใช้ตำแหน่งปัจจุบัน
+                                </button>
+                            </div>
+                            <textarea class="form-textarea" name="location" id="locationTextarea"
+                                placeholder="ระบุสถานที่ให้ชัดเจน เช่น ซอยสุขุมวิท 115 หน้าร้านเซเว่น..." rows="3"
+                                required></textarea>
+                            <p class="form-hint" id="locationHint">
+                                ระบุให้ละเอียดที่สุดเพื่อให้เจ้าหน้าที่เข้าถึงได้สะดวก</p>
+                            <input type="hidden" name="latitude" id="latitudeInput">
+                            <input type="hidden" name="longitude" id="longitudeInput">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span>📷</span>
+                            <h3>4. รูปภาพประกอบ (ไม่บังคับ)</h3>
+                        </div>
+                        <div class="file-upload" id="imageUpload">
+                            <div class="file-upload-icon">📁</div>
+                            <p class="file-upload-text">คลิกหรือลากไฟล์มาวางที่นี่</p>
+                            <p class="file-upload-hint">รองรับไฟล์ JPG, PNG ไม่เกิน 5 รูป</p>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" multiple style="display: none;">
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span>👤</span>
+                            <h3>5. ข้อมูลผู้แจ้ง</h3>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">ชื่อ-นามสกุล <span class="required">*</span></label>
+                                <input type="text" class="form-input" name="name" placeholder="ชื่อจริง นามสกุล"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">เบอร์โทรศัพท์ <span class="required">*</span></label>
+                                <input type="tel" class="form-input" name="phone" placeholder="08X-XXX-XXXX" required>
+                                <p class="form-text text-muted" style="font-size: 0.8rem; margin-top: 0.25rem;">
+                                    <i class="fas fa-lock" style="color: var(--primary-500);"></i>
+                                    เบอร์โทรศัพท์นี้จะเป็นความลับและใช้สำหรับ<strong>ยืนยันตัวตน</strong>ในการติดตามสถานะเท่านั้น
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">LINE ID (ไม่บังคับ)</label>
+                            <input type="text" class="form-input" name="line"
+                                placeholder="@username หรือ หมายเลขโทรศัพท์">
+                        </div>
+                        <div class="form-section">
+                            <div class="form-section-title"><span>🛡️</span>
+                                <h3>6. ยืนยันข้อมูล</h3>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" name="pdpa" required>
+                                    <span class="checkmark"></span>
+                                    ข้าพเจ้ายินยอมให้ข้อมูลส่วนบุคคลเพื่อการดำเนินการแก้ไขปัญหา (PDPA Policy)
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <div class="captcha-box">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" name="captcha" required>
+                                        <span class="checkmark" style="border-radius: 2px;"></span>
+                                        ฉันไม่ใช่โปรแกรมอัตโนมัติ (I'm not a robot)
+                                    </label>
+                                    <div class="captcha-logo">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png"
+                                            alt="reCAPTCHA" style="width: 40px; opacity: 0.7;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">✅ ส่งเรื่องร้องเรียน</button>
+                            <p
+                                style="margin-top: var(--space-4); color: var(--gray-500); font-size: var(--font-size-sm);">
+                                เมื่อส่งสำเร็จ คุณจะได้รับหมายเลขอ้างอิงสำหรับติดตามสถานะ</p>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 สมุทรปราการ ร่วมใจ - ทุกเสียงมีความหมาย</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/services/db-service.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            if (category) {
+                const btn = document.querySelector(`[data-category="${category}"]`);
+                if (btn) btn.click();
+            }
+        });
+    </script>
+</body>
+
+</html>

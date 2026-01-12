@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบเจ้าหน้าที่ - สมุทรปราการ ร่วมใจ</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-700), var(--primary-900));
+            padding: var(--space-4);
+        }
+
+        .login-card {
+            background: white;
+            padding: var(--space-8);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-2xl);
+            font-weight: bold;
+            margin: 0 auto var(--space-6);
+        }
+
+        .login-title {
+            margin-bottom: var(--space-2);
+            font-size: var(--font-size-2xl);
+            color: var(--gray-900);
+        }
+
+        .login-subtitle {
+            color: var(--gray-500);
+            margin-bottom: var(--space-8);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">SP</div>
+            <h1 class="login-title">Admin Login</h1>
+            <p class="login-subtitle">ระบบจัดการเรื่องร้องเรียน</p>
+
+            <form id="loginForm">
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">ชื่อผู้ใช้งาน</label>
+                    <input type="text" class="form-input" id="username" placeholder="กรอกชื่อผู้ใช้งาน" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password" class="form-input" id="password" placeholder="กรอกรหัสผ่าน" required>
+                </div>
+
+                <div class="form-error" id="loginError" style="display: none; margin-bottom: var(--space-4);">
+                    ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full btn-lg">
+                    🔒 เข้าสู่ระบบ
+                </button>
+            </form>
+
+            <div style="margin-top: var(--space-6);">
+                <a href="../index.html" style="color: var(--gray-500); font-size: var(--font-size-sm);">← กลับหน้าหลัก</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services -->
+    <script src="../js/services/auth-service.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const btn = loginForm.querySelector('button');
+
+        // Check if already logged in
+        if (authService.isAuthenticated()) {
+            window.location.href = 'dashboard.html';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            btn.disabled = true;
+            btn.innerHTML = '⏳ กำลังตรวจสอบ...';
+            loginError.style.display = 'none';
+
+            try {
+                await authService.login(username, password);
+                window.location.href = 'dashboard.html';
+            } catch (err) {
+                loginError.textContent = err.message;
+                loginError.style.display = 'block';
+                // Shake animation
+                loginError.style.animation = 'none';
+                setTimeout(() => loginError.style.animation = 'shake 0.5s ease', 10);
+                
+                btn.disabled = false;
+                btn.innerHTML = '🔒 เข้าสู่ระบบ';
+            }
+        });
+    </script>
+</body>
+
+</html>
