@@ -461,7 +461,7 @@ h6 {
   display: flex;
   align-items: center;
   padding-top: 80px;
-  background-image: linear-gradient(rgba(0, 32, 82, 0.7), rgba(0, 32, 82, 0.7)), url('../assets/hero-desktop.jpg');
+  background-image: linear-gradient(rgba(0, 32, 82, 0.5), rgba(0, 32, 82, 0.8)), url('../assets/hero_v2.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -472,7 +472,7 @@ h6 {
 /* Responsive Background for Mobile */
 @media (max-width: 768px) {
   .hero {
-    background-image: linear-gradient(rgba(0, 32, 82, 0.7), rgba(0, 32, 82, 0.7)), url('../assets/hero-mobile.jpg');
+    background-image: linear-gradient(rgba(0, 32, 82, 0.6), rgba(0, 32, 82, 0.8)), url('../assets/hero_v2.jpg');
     background-position: top center;
   }
 }
