@@ -13,7 +13,7 @@ class AuthService {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Hardcoded credentials for prototype
-        if (username === 'admin' && password === 'admin1234') {
+        if (username === 'pondsuriya' && password === 'Suriy@24') {
             const token = 'admin-token-' + Date.now();
             sessionStorage.setItem(this.SESSION_KEY, JSON.stringify({
                 token: token,
