@@ -105,27 +105,33 @@
         <div class="container">
             <div class="track-container">
                 <form id="trackSearchForm" class="search-box mb-8"
-                    style="background: white; padding: var(--space-6); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
-                    <div
-                        style="display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: flex-end;">
-                        <div class="form-group mb-0">
-                            <label class="form-label" style="font-size: 0.9rem;">หมายเลขอ้างอิง</label>
+                    style="background: white; padding: var(--space-8); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); max-width: 500px; margin-left: auto; margin-right: auto;">
+                    <div style="display: flex; flex-direction: column; gap: var(--space-6); align-items: center;">
+                        <div class="form-group mb-0 w-full" style="text-align: center;">
+                            <label class="form-label"
+                                style="font-size: 1rem; margin-bottom: var(--space-2); display: block;">หมายเลขอ้างอิง</label>
                             <input type="text" id="trackId" class="form-input" placeholder="เช่น ST-2026-XXXX"
-                                style="text-transform: uppercase; width: 100%;" required>
+                                style="text-transform: uppercase; width: 100%; height: 56px; font-size: 1.25rem; text-align: center; border-radius: var(--radius-md);"
+                                required>
                         </div>
-                        <div class="form-group mb-0">
-                            <label class="form-label" style="font-size: 0.9rem;">เบอร์โทรศัพท์ (ยืนยันตัวตน)</label>
+                        <div class="form-group mb-0 w-full" style="text-align: center;">
+                            <label class="form-label"
+                                style="font-size: 1rem; margin-bottom: var(--space-2); display: block;">เบอร์โทรศัพท์
+                                (ยืนยันตัวตน)</label>
                             <input type="tel" id="trackPhone" class="form-input" placeholder="เบอร์ที่ใช้แจ้งเรื่อง"
-                                style="width: 100%;" required>
+                                style="width: 100%; height: 56px; font-size: 1.25rem; text-align: center; border-radius: var(--radius-md);"
+                                required>
                         </div>
-                        <div class="form-group mb-0 text-center">
+                        <div class="form-group mb-0 text-center w-full">
                             <button type="submit" class="btn btn-primary"
-                                style="height: 48px; white-space: nowrap; min-width: 160px;">ตรวจสอบสถานะ</button>
+                                style="height: 56px; width: 100%; max-width: 240px; font-size: 1.1rem; border-radius: var(--radius-md);">🔎
+                                ค้นหา</button>
                         </div>
+                        <p class="text-muted"
+                            style="font-size: 0.85rem; text-align: center; margin-top: var(--space-2); line-height: 1.4;">
+                            * เพื่อความเป็นส่วนตัว โปรดระบุเบอร์โทรศัพท์ที่ท่านแจ้งเรื่องไว้เพื่อเข้าดูรายละเอียด
+                        </p>
                     </div>
-                    <p class="text-muted mt-2" style="font-size: 0.8rem; text-align: left;">
-                        * เพื่อความเป็นส่วนตัว โปรดระบุเบอร์โทรศัพท์ที่ท่านแจ้งเรื่องไว้เพื่อเข้าดูรายละเอียด
-                    </p>
                 </form>
 
                 <div id="trackResult" style="display: none;"></div>
