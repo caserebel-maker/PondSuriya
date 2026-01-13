@@ -28,7 +28,8 @@ class AuthService {
 
     logout() {
         sessionStorage.removeItem(this.SESSION_KEY);
-        window.location.href = '../admin/login.html';
+        // Redirect to the home page URL as requested
+        window.location.href = 'https://caserebel-maker.github.io/PondSuriya/';
     }
 
     isAuthenticated() {

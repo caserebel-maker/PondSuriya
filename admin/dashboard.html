@@ -130,6 +130,75 @@
             .sidebar {
                 display: none;
             }
+
+            .main-content {
+                padding: var(--space-4);
+            }
+
+            .top-bar h1 {
+                font-size: var(--font-size-xl);
+            }
+
+            .stat-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--space-3);
+            }
+
+            .stat-card {
+                padding: var(--space-3);
+            }
+
+            .stat-card-title {
+                font-size: 0.75rem;
+            }
+
+            .stat-card-value {
+                font-size: var(--font-size-xl);
+            }
+
+            .user-profile span {
+                display: none;
+            }
+        }
+
+        /* Profile Dropdown Styles */
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--space-2);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            margin-top: var(--space-2);
+            border: 1px solid var(--gray-100);
+        }
+
+        .profile-dropdown.show {
+            display: flex;
+        }
+
+        .profile-dropdown a {
+            padding: var(--space-3);
+            text-decoration: none;
+            color: var(--gray-700);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+            font-size: var(--font-size-sm);
+        }
+
+        .profile-dropdown a:hover {
+            background: var(--gray-50);
+            color: var(--primary-600);
         }
     </style>
 </head>
@@ -157,9 +226,17 @@
         <main class="main-content">
             <div class="top-bar">
                 <h1 id="pageTitle">ภาพรวมวันนี้</h1>
-                <div class="user-profile">
+                <div class="user-profile" id="userProfile">
                     <span id="adminName">Admin</span>
-                    <div style="width: 40px; height: 40px; background: var(--gray-200); border-radius: 50%;"></div>
+                    <div
+                        style="width: 40px; height: 40px; background: var(--primary-600); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        AD
+                    </div>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="dashboard.html">📊 Dashboard Home</a>
+                        <hr style="margin: 4px 0; border: none; border-top: 1px solid var(--gray-100);">
+                        <a href="#" onclick="authService.logout()" style="color: var(--accent-600);">🚪 ออกจากระบบ</a>
+                    </div>
                 </div>
             </div>
 
@@ -275,6 +352,19 @@
                 tbody.appendChild(tr);
             });
         }
+
+        // Dropdown Toggle
+        const userProfile = document.getElementById('userProfile');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        userProfile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            profileDropdown.classList.remove('show');
+        });
 
         loadDashboard();
     </script>

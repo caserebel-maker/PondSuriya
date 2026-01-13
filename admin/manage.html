@@ -84,6 +84,61 @@
                 grid-template-columns: 1fr;
                 padding: var(--space-4);
             }
+
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: var(--space-1);
+            }
+        }
+
+        /* Profile Dropdown Styles */
+        .user-profile {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--space-2);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            margin-top: var(--space-2);
+            border: 1px solid var(--gray-100);
+        }
+
+        .profile-dropdown.show {
+            display: flex;
+        }
+
+        .profile-dropdown a {
+            padding: var(--space-3);
+            text-decoration: none;
+            color: var(--gray-700);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+            font-size: var(--font-size-sm);
+            text-align: left;
+        }
+
+        .profile-dropdown a:hover {
+            background: var(--gray-50);
+            color: var(--primary-600);
+        }
+
+        @media (max-width: 768px) {
+            .user-profile span {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -91,9 +146,24 @@
 <body>
     <!-- Navbar (Simplified for admin) -->
     <nav
-        style="background: white; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center;">
-        <div style="font-weight: bold; font-size: var(--font-size-lg);">⚡ จัดการเรื่องร้องเรียน</div>
-        <a href="dashboard.html" class="btn btn-sm btn-secondary">← กลับหน้า Dashboard</a>
+        style="background: white; padding: var(--space-2) var(--space-8); border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;">
+        <div style="font-weight: bold; font-size: var(--font-size-lg); display: flex; align-items: center; gap: 10px;">
+            <a href="dashboard.html" style="text-decoration: none; color: inherit;">←</a>
+            จัดการเรื่องร้องเรียน
+        </div>
+
+        <div class="user-profile" id="userProfile">
+            <span id="adminName">Admin</span>
+            <div
+                style="width: 35px; height: 35px; background: var(--primary-600); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                AD
+            </div>
+            <div class="profile-dropdown" id="profileDropdown">
+                <a href="dashboard.html">📊 Dashboard Home</a>
+                <hr style="margin: 4px 0; border: none; border-top: 1px solid var(--gray-100);">
+                <a href="#" onclick="authService.logout()" style="color: var(--accent-600);">🚪 ออกจากระบบ</a>
+            </div>
+        </div>
     </nav>
 
     <div class="manage-layout">
@@ -315,6 +385,23 @@
                 btn.textContent = '💾 บันทึกการเปลี่ยนแปลง';
             }
         });
+
+        // Dropdown Toggle
+        const userProfile = document.getElementById('userProfile');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        if (userProfile && profileDropdown) {
+            userProfile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', () => {
+                profileDropdown.classList.remove('show');
+            });
+        }
+
+        document.getElementById('adminName').textContent = authService.getUser().user;
 
         loadReport();
     </script>
