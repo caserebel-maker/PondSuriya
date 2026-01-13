@@ -1,42 +1,17 @@
 /**
  * Database Service
- * Handles data operations with simulated async API calls
- * Currently uses LocalStorage with structure ready for Firebase migration
+ * Handles data operations with Firebase Firestore
+ * Replaces LocalStorage for cross-device synchronization
  */
 
 class DatabaseService {
     constructor() {
-        this.STORAGE_KEY = 'sp_reports_db';
-        // Initialize storage if empty
-        if (!localStorage.getItem(this.STORAGE_KEY)) {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify([]));
+        // Initialize Firebase if not already initialized
+        if (!firebase.apps.length) {
+            firebase.initializeApp(window.firebaseConfig);
         }
-    }
-
-    // --- Helpers ---
-    _getReports() {
-        try {
-            return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
-        } catch (e) {
-            console.error('DB Corrupt, resetting', e);
-            return [];
-        }
-    }
-
-    _saveReports(reports) {
-        try {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(reports));
-            return true;
-        } catch (e) {
-            if (e.name === 'QuotaExceededError') {
-                throw new Error('STORAGE_FULL');
-            }
-            throw e;
-        }
-    }
-
-    _simulateDelay() {
-        return new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 500));
+        this.db = firebase.firestore();
+        this.collectionName = 'reports';
     }
 
     // --- Public API ---
@@ -46,12 +21,10 @@ class DatabaseService {
      * @param {Object} reportData 
      */
     async createReport(reportData) {
-        await this._simulateDelay();
-
-        const reports = this._getReports();
+        const id = 'ST-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
         const newReport = {
             ...reportData,
-            id: 'ST-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000), // e.g., ST-2026-1234
+            id: id,
             status: 'pending',
             createdAt: new Date().toISOString(),
             timeline: [
@@ -64,12 +37,8 @@ class DatabaseService {
             rating: null
         };
 
-        // Compress images if handled in UI, but safety check here
-        // In real Firebase, we would upload images to Storage and get URLs here
-
-        reports.unshift(newReport);
-        this._saveReports(reports);
-
+        // Save to Firestore using tracking ID as document name for easier retrieval
+        await this.db.collection(this.collectionName).doc(id).set(newReport);
         return newReport;
     }
 
@@ -78,9 +47,13 @@ class DatabaseService {
      * @param {string} trackingId 
      */
     async getReportById(trackingId) {
-        await this._simulateDelay();
-        const reports = this._getReports();
-        return reports.find(r => r.id === trackingId) || null;
+        try {
+            const doc = await this.db.collection(this.collectionName).doc(trackingId).get();
+            return doc.exists ? doc.data() : null;
+        } catch (e) {
+            console.error('Firestore Error:', e);
+            throw e;
+        }
     }
 
     /**
@@ -88,18 +61,25 @@ class DatabaseService {
      * @param {Object} filters 
      */
     async getAllReports(filters = {}) {
-        await this._simulateDelay();
-        let reports = this._getReports();
+        try {
+            let query = this.db.collection(this.collectionName).orderBy('createdAt', 'desc');
 
-        if (filters.status) {
-            reports = reports.filter(r => r.status === filters.status);
+            if (filters.status) {
+                query = query.where('status', '==', filters.status);
+            }
+
+            if (filters.category) {
+                query = query.where('category', '==', filters.category);
+            }
+
+            const snapshot = await query.get();
+            const reports = [];
+            snapshot.forEach(doc => reports.push(doc.data()));
+            return reports;
+        } catch (e) {
+            console.error('Firestore Error:', e);
+            return [];
         }
-
-        if (filters.category) {
-            reports = reports.filter(r => r.category === filters.category);
-        }
-
-        return reports;
     }
 
     /**
@@ -110,27 +90,34 @@ class DatabaseService {
      * @param {Object} extraData (after_images, etc)
      */
     async updateReportStatus(id, newStatus, message, extraData = {}) {
-        await this._simulateDelay();
-        const reports = this._getReports();
-        const index = reports.findIndex(r => r.id === id);
+        const docRef = this.db.collection(this.collectionName).doc(id);
+        const doc = await docRef.get();
 
-        if (index === -1) throw new Error('REPORT_NOT_FOUND');
+        if (!doc.exists) throw new Error('REPORT_NOT_FOUND');
 
-        const report = reports[index];
-        report.status = newStatus;
-        report.timeline.unshift({
+        const report = doc.data();
+
+        const updatedTimeline = [
+            {
+                status: newStatus,
+                message: message,
+                timestamp: new Date().toISOString(),
+                ...extraData
+            },
+            ...report.timeline
+        ];
+
+        const updates = {
             status: newStatus,
-            message: message,
-            timestamp: new Date().toISOString(),
-            ...extraData
-        });
+            timeline: updatedTimeline
+        };
 
         if (extraData.afterImages) {
-            report.afterImages = extraData.afterImages;
+            updates.afterImages = extraData.afterImages;
         }
 
-        this._saveReports(reports);
-        return report;
+        await docRef.update(updates);
+        return { ...report, ...updates };
     }
 
     /**
@@ -140,19 +127,14 @@ class DatabaseService {
      * @param {string} comment 
      */
     async submitRating(id, score, comment) {
-        await this._simulateDelay();
-        const reports = this._getReports();
-        const report = reports.find(r => r.id === id);
-
-        if (!report) throw new Error('REPORT_NOT_FOUND');
-
-        report.rating = {
+        const docRef = this.db.collection(this.collectionName).doc(id);
+        const rating = {
             score,
             comment,
             timestamp: new Date().toISOString()
         };
 
-        this._saveReports(reports);
+        await docRef.update({ rating: rating });
         return true;
     }
 }
