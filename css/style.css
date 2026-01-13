@@ -313,7 +313,7 @@ h6 {
     top: 70px;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.7);
+    background: linear-gradient(135deg, rgba(0, 32, 82, 0.5), rgba(1, 61, 154, 0.5));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     flex-direction: column;
