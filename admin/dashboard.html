@@ -141,19 +141,26 @@
 
             .stat-cards {
                 grid-template-columns: 1fr 1fr;
-                gap: var(--space-3);
+                gap: var(--space-4);
             }
 
             .stat-card {
-                padding: var(--space-3);
+                padding: var(--space-4);
+                aspect-ratio: 1 / 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
             }
 
             .stat-card-title {
-                font-size: 0.75rem;
+                font-size: 0.85rem;
+                margin-bottom: var(--space-3);
             }
 
             .stat-card-value {
-                font-size: var(--font-size-xl);
+                font-size: var(--font-size-3xl);
             }
 
             .user-profile span {
