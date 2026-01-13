@@ -313,14 +313,42 @@ h6 {
     top: 70px;
     left: 0;
     right: 0;
-    background: white;
+    background: linear-gradient(135deg, rgba(0, 32, 82, 0.85), rgba(1, 61, 154, 0.85));
+    backdrop-filter: blur(10px);
     flex-direction: column;
-    padding: var(--space-6);
-    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    gap: 0;
     box-shadow: var(--shadow-lg);
     transform: translateY(-150%);
     opacity: 0;
     transition: all var(--transition-normal);
+  }
+
+  .navbar-menu li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .navbar-menu li:last-child {
+    border-bottom: none;
+  }
+
+  .navbar-menu a {
+    display: block;
+    padding: var(--space-4) var(--space-6);
+    color: white !important;
+    font-weight: 500;
+  }
+
+  .navbar-menu a::after {
+    display: none;
+    /* Hide hover underline on mobile */
+  }
+
+  .navbar-menu li:last-child a {
+    background: transparent !important;
+    /* Remove the button background on mobile */
+    padding: var(--space-4) var(--space-6);
   }
 
   .navbar-menu.active {
