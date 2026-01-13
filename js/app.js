@@ -368,6 +368,16 @@ function initReportForm() {
       // Use Database Service
       const newReport = await dbService.createReport(reportData);
 
+      // Save to local history for privacy
+      AppState.reports.unshift({
+        id: newReport.id,
+        category: newReport.category,
+        description: newReport.description,
+        status: newReport.status,
+        createdAt: newReport.createdAt
+      });
+      saveReports();
+
       // Show success modal
       showSuccessModal(newReport.id);
 
@@ -603,10 +613,10 @@ async function initTrackPage() {
   const resultContainer = document.getElementById('trackResult');
   const recentContainer = document.getElementById('recentReports');
 
-  // Load Recent Reports (from DB Service)
+  // Load Recent Reports (from Local State for Privacy)
   if (recentContainer) {
     try {
-      const reports = await dbService.getAllReports();
+      const reports = AppState.reports;
       // Sort by date desc
       reports.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -716,6 +726,22 @@ async function searchReport(trackId) {
         // Redirect to Error Page
         window.location.href = 'track_error.html';
       } else {
+        // Add to local history if not already there
+        const exists = AppState.reports.find(r => r.id === report.id);
+        if (!exists) {
+          AppState.reports.unshift({
+            id: report.id,
+            category: report.category,
+            description: report.description,
+            status: report.status,
+            createdAt: report.createdAt
+          });
+          saveReports();
+
+          // Refresh the recent list if we are on track page
+          initTrackPage();
+        }
+
         // Success - Show Details
         resultContainer.innerHTML = renderReportDetails(report);
         resultContainer.style.display = 'block';
