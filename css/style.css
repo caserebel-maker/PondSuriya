@@ -474,6 +474,8 @@ h6 {
   .hero {
     background-image: linear-gradient(rgba(0, 32, 82, 0.6), rgba(0, 32, 82, 0.8)), url('../assets/hero_mobile_v2.jpg');
     background-position: top center;
+    align-items: flex-start;
+    padding-top: 35vh; /* Shifts text down to chest level */
   }
 }
 
