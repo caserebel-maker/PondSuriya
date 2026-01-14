@@ -361,7 +361,7 @@ function initReportForm() {
       images: [...uploadedImages],
       // New fields from UI
       pdpaAccepted: formData.get('pdpa') === 'on',
-      // In real world, captcha would be verified here
+      turnstileToken: formData.get('cf-turnstile-response'),
     };
 
     try {
@@ -434,6 +434,16 @@ function validateForm(form) {
   } else if (categorySection) {
     const errorEl = categorySection.querySelector('.form-error');
     if (errorEl) errorEl.style.display = 'none';
+  }
+
+  // Validate Turnstile
+  const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
+  if (turnstileResponse && !turnstileResponse.value) {
+    isValid = false;
+    alert('กรุณายืนยันว่าคุณไม่ใช่โปรแกรมอัตโนมัติ (Captcha)');
+    if (!firstErrorElement) {
+        firstErrorElement = document.getElementById('turnstile-container');
+    }
   }
 
   requiredFields.forEach(field => {

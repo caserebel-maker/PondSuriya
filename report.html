@@ -7,6 +7,7 @@
     <meta name="description" content="แจ้งปัญหาในชุมชนของคุณ">
     <title>แจ้งปัญหา - สุริยะ x ธนา</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         .category-buttons {
             display: grid;
@@ -312,17 +313,8 @@
                                 </label>
                             </div>
                             <div class="form-group">
-                                <div class="captcha-box">
-                                    <label class="checkbox-container">
-                                        <input type="checkbox" name="captcha" required>
-                                        <span class="checkmark" style="border-radius: 2px;"></span>
-                                        ฉันไม่ใช่โปรแกรมอัตโนมัติ (I'm not a robot)
-                                    </label>
-                                    <div class="captcha-logo">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png"
-                                            alt="reCAPTCHA" style="width: 40px; opacity: 0.7;">
-                                    </div>
-                                </div>
+                                <div id="turnstile-container" class="cf-turnstile"
+                                    data-sitekey="1x00000000000000000000AA"></div>
                             </div>
                         </div>
 
